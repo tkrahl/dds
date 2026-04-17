@@ -41,26 +41,10 @@ public class DonadoresYEntidadesTest {
     instancia.setFachadaIncentivos(fachadaIncentivos);
 
     donadorEjemplo =
-<<<<<<< HEAD
         new DonadorDTO(null, "d1", "d1", 5, "d1", "d1", "d1", EstadoDonadorEnum.VERIFICADO, "d1");
     entidadEjemplo = new EntidadBeneficaDTO(null, "e1", "e1", "e1", "e1");
     necesidadEjemplo = new NecesidadMaterialDTO(null, "n1", 5, "n1", 5, "p1");
     quejaEjemplo = new QuejaDTO(null, "donacion1", donadorEjemplo.id(), null, "q1");
-=======
-        new DonadorDTO(
-            null,
-            "donador1",
-            "donador1",
-            5,
-            "donador1",
-            "donador1",
-            "donador1",
-            EstadoDonadorEnum.VERIFICADO,
-            "donador1");
-    entidadEjemplo = new EntidadBeneficaDTO(null, "entidad1", "entidad1", "entidad1", "entidad1");
-    necesidadEjemplo = new NecesidadMaterialDTO(null, "entidad1", 5, "necesidad1", 5, "producto1");
-    quejaEjemplo = new QuejaDTO(null, "donacion1", "donador1", null, "queja1");
->>>>>>> template/main
   }
 
   static boolean condicion() {
@@ -190,7 +174,6 @@ public class DonadoresYEntidadesTest {
   @Test
   void testAgregarQueja() {
 
-<<<<<<< HEAD
     instancia.agregarDonador(donadorEjemplo);
 
     QuejaDTO retorno = instancia.agregarQueja(quejaEjemplo);
@@ -198,18 +181,6 @@ public class DonadoresYEntidadesTest {
     Assertions.assertNotNull(retorno.id());
     Assertions.assertEquals(
         instancia.obtenerQuejasDe(quejaEjemplo.donadorID()).getFirst().id(), retorno.id());
-=======
-    DonadorDTO donadorRetorno = instancia.agregarDonador(donadorEjemplo);
-
-    QuejaDTO quejaConDonadorID =
-        new QuejaDTO(null, "donacion1", donadorRetorno.id(), null, "queja1");
-
-    QuejaDTO retorno = instancia.agregarQueja(quejaConDonadorID);
-
-    Assertions.assertNotNull(retorno.id());
-    Assertions.assertEquals(
-        instancia.obtenerQuejasDe(quejaConDonadorID.donadorID()).getFirst().id(), retorno.id());
->>>>>>> template/main
   }
 
   @Test
@@ -233,9 +204,9 @@ public class DonadoresYEntidadesTest {
   @Test
   void testPuedeDonar() {
 
-    DonadorDTO retorno = instancia.agregarDonador(donadorEjemplo);
+    instancia.agregarDonador(donadorEjemplo);
 
-    Boolean resultado = instancia.puedeDonar(retorno.id());
+    Boolean resultado = instancia.puedeDonar(donadorEjemplo.id());
 
     Assertions.assertTrue(resultado);
   }
@@ -259,7 +230,6 @@ public class DonadoresYEntidadesTest {
   }
 
   @Test
-<<<<<<< HEAD
   void testObtenerQuejasDe() {
 
     instancia.agregarDonador(donadorEjemplo);
@@ -274,8 +244,6 @@ public class DonadoresYEntidadesTest {
   }
 
   @Test
-=======
->>>>>>> template/main
   void testObtenerQuejasDeFallido() {
     Assertions.assertThrows(
         RuntimeException.class,
@@ -292,20 +260,12 @@ public class DonadoresYEntidadesTest {
           instancia.modificarEstado("Inexistente", EstadoDonadorEnum.BANEADO);
         });
 
-<<<<<<< HEAD
     instancia.agregarDonador(donadorEjemplo);
-=======
-    DonadorDTO retorno = instancia.agregarDonador(donadorEjemplo);
->>>>>>> template/main
 
     Assertions.assertThrows(
         RuntimeException.class,
         () -> {
-<<<<<<< HEAD
           instancia.modificarEstado(donadorEjemplo.id(), null);
-=======
-          instancia.modificarEstado(retorno.id(), null);
->>>>>>> template/main
         });
   }
 
@@ -317,11 +277,7 @@ public class DonadoresYEntidadesTest {
 
     Assertions.assertNotNull(actualizado);
     Assertions.assertEquals(
-<<<<<<< HEAD
         "CategoriaNueva", instancia.buscarDonadorPorID(actualizado.id()).categoria());
-=======
-        "CategoriaNueva", instancia.buscarDonadorPorID(retorno.id()).categoria());
->>>>>>> template/main
   }
 
   @Test
@@ -332,26 +288,17 @@ public class DonadoresYEntidadesTest {
           instancia.modifcarCategoria("Inexistente", "Categoria1");
         });
 
-<<<<<<< HEAD
     instancia.agregarDonador(donadorEjemplo);
-=======
-    DonadorDTO retorno = instancia.agregarDonador(donadorEjemplo);
->>>>>>> template/main
 
     Assertions.assertThrows(
         RuntimeException.class,
         () -> {
-<<<<<<< HEAD
           instancia.modifcarCategoria(donadorEjemplo.id(), null);
-=======
-          instancia.modifcarCategoria(retorno.id(), null);
->>>>>>> template/main
         });
   }
 
   @Test
   void testObtenerNecesidadesInsatisfechasDe() {
-<<<<<<< HEAD
     instancia.registrarNecesidad(necesidadEjemplo);
 
     List<NecesidadMaterialDTO> resultado =
@@ -360,15 +307,6 @@ public class DonadoresYEntidadesTest {
     Assertions.assertNotNull(resultado);
     Assertions.assertEquals(1, resultado.size());
     Assertions.assertEquals(necesidadEjemplo.id(), resultado.getFirst().id());
-=======
-    NecesidadMaterialDTO retorno = instancia.registrarNecesidad(necesidadEjemplo);
-
-    List<NecesidadMaterialDTO> resultado = instancia.obtenerNecesidadesInsatisfechasDe("producto1");
-
-    Assertions.assertNotNull(resultado);
-    Assertions.assertEquals(1, resultado.size());
-    Assertions.assertEquals(retorno.id(), resultado.getFirst().id());
->>>>>>> template/main
   }
 
   @Test
@@ -379,37 +317,24 @@ public class DonadoresYEntidadesTest {
           instancia.satisfacerNecesidad("Inexistente", 5);
         });
 
-<<<<<<< HEAD
     instancia.registrarNecesidad(necesidadEjemplo);
-=======
-    NecesidadMaterialDTO retorno = instancia.registrarNecesidad(necesidadEjemplo);
->>>>>>> template/main
 
     Assertions.assertThrows(
         RuntimeException.class,
         () -> {
-<<<<<<< HEAD
           instancia.satisfacerNecesidad(necesidadEjemplo.id(), 0);
-=======
-          instancia.satisfacerNecesidad(retorno.id(), 0);
->>>>>>> template/main
         });
 
     Assertions.assertThrows(
         RuntimeException.class,
         () -> {
-<<<<<<< HEAD
           instancia.satisfacerNecesidad(necesidadEjemplo.id(), -1);
-=======
-          instancia.satisfacerNecesidad(retorno.id(), -1);
->>>>>>> template/main
         });
   }
 
   @Test
   void testObtenerEstadisticasDonador() {
 
-<<<<<<< HEAD
     when(fachadaIncentivos.getInsigniasDeDonador(anyString()))
         .thenReturn(List.of(new InsigniaDTO(null, "insignia1", "insignia1descr")));
     when(fachadaIncentivos.getMisionEnCursoDeDonador(anyString()))
@@ -425,23 +350,5 @@ public class DonadoresYEntidadesTest {
 
     verify(fachadaIncentivos, times(1)).getInsigniasDeDonador(anyString());
     verify(fachadaIncentivos, times(1)).getMisionEnCursoDeDonador(anyString());
-=======
-    DonadorDTO donadorConID = instancia.agregarDonador(donadorEjemplo);
-
-    when(fachadaIncentivos.getInsigniasDeDonador(donadorConID.id()))
-        .thenReturn(List.of(new InsigniaDTO("insignia1", "insignia1", "insignia1")));
-    when(fachadaIncentivos.getMisionEnCursoDeDonador(donadorConID.id()))
-        .thenReturn(new MisionDTO("mision1", "mision1", "insignia1", null, null));
-
-    DonadorStatsDTO retorno = instancia.estadisticasDonador(donadorConID.id());
-
-    Assertions.assertNotNull(retorno);
-    Assertions.assertEquals(donadorConID.nombre(), retorno.nombre());
-    Assertions.assertEquals(1, retorno.insigniasID().size());
-    Assertions.assertNotNull(retorno.misionActualID());
-
-    verify(fachadaIncentivos, times(1)).getInsigniasDeDonador(donadorConID.id());
-    verify(fachadaIncentivos, times(1)).getMisionEnCursoDeDonador(donadorConID.id());
->>>>>>> template/main
   }
 }

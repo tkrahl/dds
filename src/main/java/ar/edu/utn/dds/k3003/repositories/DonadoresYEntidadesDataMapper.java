@@ -25,6 +25,8 @@ public class DonadoresYEntidadesDataMapper {
         donadorDTO.edad(),
         donadorDTO.email(),
         donadorDTO.nroDocumento(),
-        donadorDTO.domicilio());
+        donadorDTO.domicilio(),
+        null,
+        null);
   }
 }

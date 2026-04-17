@@ -8,8 +8,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import lombok.val;
 
 public class InMemoryMisionesRepo implements MisionesRepository {
-    
-private List<Mision> misions;
+
+  private List<Mision> misions;
   private AtomicLong idSecuencial = new AtomicLong(1);
 
   public InMemoryMisionesRepo() {
@@ -36,5 +36,4 @@ private List<Mision> misions;
     this.misions.remove(mision.get());
     return mision.get();
   }
-    
 }

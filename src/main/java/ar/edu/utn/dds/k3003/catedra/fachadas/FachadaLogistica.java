@@ -15,12 +15,7 @@ public interface FachadaLogistica {
 
   AsignacionDTO buscarAsignacionPorPaqueteID(String paqueteID) throws NoSuchElementException;
 
-<<<<<<< HEAD
   DepositoDTO gestionarDonacion(String depositoID, String productoID, Integer cantidad)
-=======
-  DepositoDTO gestionarDonacion(
-      String depositoID, String donacionID, String productoID, Integer cantidad)
->>>>>>> template/main
       throws NoSuchElementException;
 
   void setAlgoritmoMM();

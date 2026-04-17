@@ -7,25 +7,22 @@ import ar.edu.utn.dds.k3003.catedra.fachadas.FachadaDonadoresYEntidades;
 import ar.edu.utn.dds.k3003.catedra.fachadas.FachadaIncentivos;
 import ar.edu.utn.dds.k3003.exceptions.DonadorNoEncontradoException;
 import ar.edu.utn.dds.k3003.exceptions.DonadorYaExistenteException;
-import ar.edu.utn.dds.k3003.model.Donador;
-import ar.edu.utn.dds.k3003.model.Mision;
-import ar.edu.utn.dds.k3003.model.Insignia;
+import ar.edu.utn.dds.k3003.exceptions.InsigniaNoEncontradaException;
+import ar.edu.utn.dds.k3003.exceptions.MisionNoEncontradaException;
 import ar.edu.utn.dds.k3003.repositories.DonadoresRepository;
-import ar.edu.utn.dds.k3003.repositories.InsigniasRepository;
-import ar.edu.utn.dds.k3003.repositories.MisionesRepository;
 import ar.edu.utn.dds.k3003.repositories.DonadoresYEntidadesDataMapper;
-import ar.edu.utn.dds.k3003.repositories.IncentivosDataMapper;
 import ar.edu.utn.dds.k3003.repositories.InMemoryDonadoresRepo;
 import ar.edu.utn.dds.k3003.repositories.InMemoryInsigniasRepo;
 import ar.edu.utn.dds.k3003.repositories.InMemoryMisionesRepo;
-
-
+import ar.edu.utn.dds.k3003.repositories.IncentivosDataMapper;
+import ar.edu.utn.dds.k3003.repositories.InsigniasRepository;
+import ar.edu.utn.dds.k3003.repositories.MisionesRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.val;
 
-public class Fachada implements FachadaIncentivos{
+public class Fachada implements FachadaIncentivos {
 
   private DonadoresRepository donadoresRepository;
   private InsigniasRepository insigniasRepository;
@@ -33,11 +30,11 @@ public class Fachada implements FachadaIncentivos{
 
   private DonadoresYEntidadesDataMapper donadoresYEntidadesDataMapper =
       new DonadoresYEntidadesDataMapper();
-  private IncentivosDataMapper incentivosDataMapper = 
-      new IncentivosDataMapper();
+  private IncentivosDataMapper incentivosDataMapper = new IncentivosDataMapper();
+
+  FachadaDonadoresYEntidades fachadaDonadoresYEntidades;
 
   public Fachada() {
-
 
     this.donadoresRepository = new InMemoryDonadoresRepo();
     this.insigniasRepository = new InMemoryInsigniasRepo();
@@ -45,7 +42,7 @@ public class Fachada implements FachadaIncentivos{
   }
 
   @Override
-  public InsigniaDTO agregarInsignia(InsigniaDTO insignia){
+  public InsigniaDTO agregarInsignia(InsigniaDTO insignia) {
 
     if (this.insigniasRepository.findById(insignia.id()).isPresent()) {
       throw new DonadorYaExistenteException("Ya existe una insignia con ese ID");
@@ -55,10 +52,10 @@ public class Fachada implements FachadaIncentivos{
     val insigniaGuardada = this.insigniasRepository.save(insigniaModel);
 
     return incentivosDataMapper.toInsigniaDTO(insigniaGuardada);
-
   }
+
   @Override
-  public MisionDTO agregarMision(MisionDTO mision){
+  public MisionDTO agregarMision(MisionDTO mision) {
 
     if (this.misionesRepository.findById(mision.id()).isPresent()) {
       throw new DonadorYaExistenteException("Ya existe una mision con ese ID");
@@ -68,76 +65,106 @@ public class Fachada implements FachadaIncentivos{
     val misionGuardada = this.misionesRepository.save(misionModel);
 
     return incentivosDataMapper.toMisionDTO(misionGuardada);
-
   }
-  @Override
-  public List<InsigniaDTO> getInsigniasDeDonador(String donadorID) throws NoSuchElementException{
 
-    val donador = donadoresRepository.findById(donadorID);
-    if (donador.isEmpty()) {
+  @Override
+  public List<InsigniaDTO> getInsigniasDeDonador(String donadorID) throws NoSuchElementException {
+
+    DonadorDTO donadorDTO = fachadaDonadoresYEntidades.buscarDonadorPorID(donadorID);
+
+    if (donadorDTO==null) {
       throw new DonadorNoEncontradoException("No existe un donador con ese ID");
     }
-    
-    FachadaDonadoresYEntidades fachadaDonadoresYEntidades = null;
-    setFachadaDonadoresYEntidades(fachadaDonadoresYEntidades);
 
-    DonadorStatsDTO donadorStatsDTO = fachadaDonadoresYEntidades.estadisticasDonador(donadorID);
+    val donador = donadoresYEntidadesDataMapper.toDonador(donadorDTO);
+
+    // Agregar exception lista nula
+
     List<InsigniaDTO> insigniasDTO = new ArrayList<>();
-    for(String insigniaID: donadorStatsDTO.insigniasID()){
+    for (String insigniaID : donador.getInsigniasID()) {
       val insignia = this.insigniasRepository.findById(insigniaID);
-      
+
       val insigniaDTO = incentivosDataMapper.toInsigniaDTO(insignia.get());
       insigniasDTO.add(insigniaDTO);
     }
 
     return insigniasDTO;
-
   }
+
   @Override
-  public MisionDTO getMisionEnCursoDeDonador(String donadorID) throws NoSuchElementException{
+  public MisionDTO getMisionEnCursoDeDonador(String donadorID) throws NoSuchElementException {
+
+    DonadorDTO donadorDTO = fachadaDonadoresYEntidades.buscarDonadorPorID(donadorID);
+    if (donadorDTO==null) {
+      throw new DonadorNoEncontradoException("No existe un donador con ese ID");
+    }
+    val donador = donadoresYEntidadesDataMapper.toDonador(donadorDTO);
+
+    String misionEnCursoID = donador.getMisionEnCursoID();
+    if (misionEnCursoID == null) {
+      throw new MisionNoEncontradaException("No hay mision en curso");
+    }
+
+    val misionEnCurso = this.misionesRepository.findById(misionEnCursoID);
+    if (misionEnCurso.isEmpty()) {
+      throw new MisionNoEncontradaException("No existe una mision con ese ID");
+    }
+
+    val misionEnCursoFinal = misionEnCurso.get();
+    return incentivosDataMapper.toMisionDTO(misionEnCursoFinal);
+  }
+
+  @Override
+  public void asignarMisionADonador(String donadorID, MisionDTO misionDTO)
+      throws NoSuchElementException {
+
+    DonadorDTO donadorDTO = fachadaDonadoresYEntidades.buscarDonadorPorID(donadorID);
+    if (donadorDTO==null) {
+      throw new DonadorNoEncontradoException("No existe un donador con ese ID");
+    }
+
+    val donador = donadoresRepository.findById(donadorID);
+    if (donador.isEmpty()) {
+      throw new DonadorNoEncontradoException("No existe una mision con ese ID");
+    }
+    val mision = misionesRepository.findById(misionDTO.id());
+    if (mision.isEmpty()) {
+      throw new MisionNoEncontradaException("No existe una mision con ese ID");
+    }
+
+    donador.get().setMisionEnCursoID(mision.get().getId());
+  }
+
+  @Override
+  public void asignarInsigniaADonador(String donadorID, InsigniaDTO insigniaDTO) throws NoSuchElementException {
 
     val donador = donadoresRepository.findById(donadorID);
     if (donador.isEmpty()) {
       throw new DonadorNoEncontradoException("No existe un donador con ese ID");
     }
-
-    FachadaDonadoresYEntidades fachadaDonadoresYEntidades = null;
-    setFachadaDonadoresYEntidades(fachadaDonadoresYEntidades);
-
-    DonadorStatsDTO donadorStatsDTO = fachadaDonadoresYEntidades.estadisticasDonador(donadorID);
-    String misionEnCursoID = donadorStatsDTO.misionActualID();
-
-    val misionEnCurso = this.misionesRepository.findById(misionEnCursoID);
-
-    if (misionEnCurso.isEmpty()) {
-      throw new DonadorNoEncontradoException("No existe un donador con ese ID");
+    val insignia = insigniasRepository.findById(insigniaDTO.id());
+    if (insignia.isEmpty()) {
+      throw new InsigniaNoEncontradaException("No existe una insignia con ese ID");
     }
 
-    val misionEnCursoFinal = misionEnCurso.get();
-
-    return incentivosDataMapper.toMisionDTO(misionEnCursoFinal);
-
+    donador.get().addInsigniaIDToList(insignia.get().getId());
   }
+
   @Override
-  public void asignarMisionADonador(String donadorID, MisionDTO misionDTO) throws NoSuchElementException{
+  public void procesarDonador(String donadorID) throws NoSuchElementException {
 
+    val donador = donadoresRepository.findById(donadorID);
+    if (donador.isEmpty()) {
+      throw new DonadorNoEncontradoException("No existe una mision con ese ID");
+    }
   }
+
   @Override
-  public void asignarInsigniaADonador(String donadorID, InsigniaDTO insigniaDTO) throws NoSuchElementException{
+  public void setFachadaDonaciones(FachadaDonaciones fachadaDonaciones) {}
 
-  }
   @Override
-  public void procesarDonador(String donadorID) throws NoSuchElementException{
+  public void setFachadaDonadoresYEntidades(FachadaDonadoresYEntidades fachadaDonadoresYEntidades) {}
 
-  }
-  @Override
-  public void setFachadaDonaciones(FachadaDonaciones fachadaDonaciones){
-
-  }
-  @Override
-  public void setFachadaDonadoresYEntidades(FachadaDonadoresYEntidades fachadaDonadoresYEntidades){
-
-  }
 }
 /*
 public class Fachada implements FachadaDonadoresYEntidades {
@@ -152,7 +179,7 @@ public class Fachada implements FachadaDonadoresYEntidades {
     Es decir, que no reciba parametros.
     Si necesitan un constructor con parametros
     Java permite tener varios constructores conviviendo sin conflictos.
-    
+
 
     this.donadoresRepository = new InMemoryDonadoresRepo();
   }

@@ -1,6 +1,7 @@
 package ar.edu.utn.dds.k3003.model;
 
 import ar.edu.utn.dds.k3003.catedra.dtos.donadoresYEntidades.EstadoDonadorEnum;
+import java.util.List;
 
 public class Donador {
 
@@ -13,6 +14,8 @@ public class Donador {
   private String domicilio;
   private EstadoDonadorEnum estado;
   private String categoria;
+  private List<String> insigniasID;
+  private String misionEnCursoID;
 
   public Donador(
       String nombre,
@@ -20,7 +23,9 @@ public class Donador {
       Integer edad,
       String email,
       String nroDocumento,
-      String domicilio) {
+      String domicilio,
+      List<String> insigniasID,
+      String misionEnCursoID) {
     this.nombre = nombre;
     this.apellido = apellido;
     this.edad = edad;
@@ -29,6 +34,8 @@ public class Donador {
     this.domicilio = domicilio;
     this.estado = EstadoDonadorEnum.VERIFICADO;
     this.categoria = "Ocasional";
+    this.insigniasID = insigniasID;
+    this.misionEnCursoID = misionEnCursoID;
   }
 
   public String getId() {
@@ -101,5 +108,25 @@ public class Donador {
 
   public void setCategoria(String categoria) {
     this.categoria = categoria;
+  }
+
+  public List<String> getInsigniasID() {
+    return insigniasID;
+  }
+
+  public void setInsigniasID(List<String> insigniasID) {
+    this.insigniasID = insigniasID;
+  }
+
+  public void addInsigniaIDToList(String insigniaID) {
+    this.insigniasID.add(insigniaID);
+  }
+
+  public String getMisionEnCursoID() {
+    return misionEnCursoID;
+  }
+
+  public void setMisionEnCursoID(String misionEnCursoID) {
+    this.misionEnCursoID = misionEnCursoID;
   }
 }

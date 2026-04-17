@@ -27,12 +27,8 @@ public interface FachadaDonadoresYEntidades {
 
   DonadorDTO modifcarCategoria(String donadorID, String categoria) throws NoSuchElementException;
 
-<<<<<<< HEAD
   List<NecesidadMaterialDTO> obtenerNecesidadesInsatisfechasDe(
       ProductoSolicitadoDTO productoSolicitadoDTO);
-=======
-  List<NecesidadMaterialDTO> obtenerNecesidadesInsatisfechasDe(String productoSolicitadoID);
->>>>>>> template/main
 
   NecesidadMaterialDTO satisfacerNecesidad(String necesidadID, Integer cantidad)
       throws NoSuchElementException;

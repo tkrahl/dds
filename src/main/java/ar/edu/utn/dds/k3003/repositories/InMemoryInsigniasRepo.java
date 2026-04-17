@@ -8,8 +8,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import lombok.val;
 
 public class InMemoryInsigniasRepo implements InsigniasRepository {
-    
-private List<Insignia> insignias;
+
+  private List<Insignia> insignias;
   private AtomicLong idSecuencial = new AtomicLong(1);
 
   public InMemoryInsigniasRepo() {
@@ -36,5 +36,4 @@ private List<Insignia> insignias;
     this.insignias.remove(insignia.get());
     return insignia.get();
   }
-    
 }
